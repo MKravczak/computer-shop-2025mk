@@ -6,6 +6,7 @@ import {
   getProductsByCategory,
   getProductById,
 } from '@/lib/products';
+import styles from './page.module.css';
 
 export default function ProductList() {
   // Testowanie funkcji
@@ -21,8 +22,8 @@ export default function ProductList() {
 
   return (
     <div id="page">
-      <h2>Lista produktów</h2>
-      <div>
+      <h2 className={styles.title}>Lista produktów</h2>
+      <div className={styles.stats}>
         <h3>Statystyki:</h3>
         <ul>
           <li>Wszystkich produktów: {allAlphabetically.length}</li>
@@ -33,16 +34,16 @@ export default function ProductList() {
           <li>Pamięci RAM: {ram.length}</li>
           <li>Dysków: {disks.length}</li>
         </ul>
-        {productById && (
-          <div>
-            <h3>Przykładowy produkt (ID: 1):</h3>
-            <p>Nazwa: {productById.name}</p>
-            <p>Typ: {productById.type}</p>
-            <p>Cena: {productById.price} zł</p>
-            <p>Ilość: {productById.amount}</p>
-          </div>
-        )}
       </div>
+      {productById && (
+        <div className={styles.productExample}>
+          <h3>Przykładowy produkt (ID: 1):</h3>
+          <p>Nazwa: {productById.name}</p>
+          <p>Typ: {productById.type}</p>
+          <p>Cena: {productById.price} zł</p>
+          <p>Ilość: {productById.amount}</p>
+        </div>
+      )}
     </div>
   );
 }

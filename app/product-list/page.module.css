@@ -1,0 +1,36 @@
+.title {
+  margin-bottom: 2rem;
+}
+
+.stats {
+  background-color: #6b6bc7;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.stats ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.stats li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(229, 229, 225, 0.2);
+}
+
+.stats li:last-child {
+  border-bottom: none;
+}
+
+.productExample {
+  background-color: #6b6bc7;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.productExample p {
+  margin: 0.5rem 0;
+}
+
