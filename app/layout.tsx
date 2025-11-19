@@ -38,7 +38,7 @@ export default function RootLayout({
         </header>
         {children}
         <footer>
-          <p>&copy; 2025 Computer Shop 2025mk. Wszystkie prawa zastrzeżone.</p>
+          <p>&copy; 2025 Computer Shop 2025mk.</p>
         </footer>
       </body>
     </html>

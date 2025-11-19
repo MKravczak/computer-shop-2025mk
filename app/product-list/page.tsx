@@ -6,6 +6,7 @@ import {
   getProductsInStock,
   getProductsOutOfStock,
   getProductsByCategory,
+  getProductById,
 } from '@/lib/products';
 import styles from './page.module.css';
 
@@ -17,12 +18,14 @@ const CATEGORY_SECTIONS: { label: string; value: Product['type'] }[] = [
 ];
 
 const HIGHLIGHT_COUNT = 12;
+const FEATURED_PRODUCT_ID = 1;
 
 export default function ProductList() {
   const allAlphabetically = getAllProductsAlphabetically();
   const newest = getAllProductsByDate().slice(0, HIGHLIGHT_COUNT);
   const inStock = getProductsInStock().slice(0, HIGHLIGHT_COUNT);
   const outOfStock = getProductsOutOfStock().slice(0, HIGHLIGHT_COUNT);
+  const featuredProduct = getProductById(FEATURED_PRODUCT_ID);
   const categories = CATEGORY_SECTIONS.map((category) => ({
     ...category,
     products: getProductsByCategory(category.value).slice(0, HIGHLIGHT_COUNT),
@@ -79,6 +82,23 @@ export default function ProductList() {
           />
         </section>
       ))}
+
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h3>Produkt o ID: {FEATURED_PRODUCT_ID}</h3>
+          <span>Wyświetlamy dane testowe</span>
+        </div>
+        {featuredProduct ? (
+          <ProductGrid
+            products={[featuredProduct]}
+            emptyLabel="Brak danych o tym produkcie"
+          />
+        ) : (
+          <p className={styles.placeholder}>
+            Nie znaleziono produktu o ID {FEATURED_PRODUCT_ID}.
+          </p>
+        )}
+      </section>
     </div>
   );
 }
