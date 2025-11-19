@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { Product } from '@/lib/products';
 import {
   getAllProductsAlphabetically,
@@ -97,11 +98,20 @@ function ProductGrid({
     <ul className={styles.grid}>
       {products.map((product) => (
         <li className={styles.card} key={product.id}>
+          <div className={styles.thumb}>
+            <Image
+              src="/images/products/placeholder.svg"
+              alt={`Miniatura produktu ${product.name}`}
+              width={80}
+              height={80}
+              priority={false}
+            />
+          </div>
           <div className={styles.cardHeader}>
             <span className={styles.badge}>{product.type}</span>
             <span className={styles.code}>{product.code}</span>
           </div>
-          <h4>{product.name}</h4>
+          <h4 className={styles.titleSmall}>{product.name}</h4>
           <p className={styles.description}>{product.description}</p>
           <div className={styles.meta}>
             <span>Cena: {product.price.toFixed(2)} zł</span>
