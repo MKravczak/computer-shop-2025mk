@@ -6,7 +6,7 @@ export default function NotFound() {
       <main className="error">
         <h1>Nie znaleziono strony historii zakupów</h1>
         <p>Strona historii zakupów, której szukasz, nie istnieje.</p>
-        <p><Link href="/order-history">Wróć do historii zakupów</Link> lub <Link href="/">wróć na stronę główną</Link>.</p>
+        <p><Link href="/order-history">Wróć do historii zakupów</Link>.</p>
       </main>
     </div>
   );

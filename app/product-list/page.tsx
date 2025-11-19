@@ -1,50 +1,116 @@
+import type { Product } from '@/lib/products';
 import {
   getAllProductsAlphabetically,
   getAllProductsByDate,
   getProductsInStock,
   getProductsOutOfStock,
   getProductsByCategory,
-  getProductById,
 } from '@/lib/products';
 import styles from './page.module.css';
 
+const CATEGORY_SECTIONS: { label: string; value: Product['type'] }[] = [
+  { label: 'Procesory', value: 'procesor' },
+  { label: 'Karty graficzne', value: 'karta graficzna' },
+  { label: 'Pamięci RAM', value: 'pamięć ram' },
+  { label: 'Dyski', value: 'dysk' },
+];
+
+const HIGHLIGHT_COUNT = 12;
+
 export default function ProductList() {
-  // Testowanie funkcji
   const allAlphabetically = getAllProductsAlphabetically();
-  const allByDate = getAllProductsByDate();
-  const inStock = getProductsInStock();
-  const outOfStock = getProductsOutOfStock();
-  const processors = getProductsByCategory('procesor');
-  const gpus = getProductsByCategory('karta graficzna');
-  const ram = getProductsByCategory('pamięć ram');
-  const disks = getProductsByCategory('dysk');
-  const productById = getProductById(1);
+  const newest = getAllProductsByDate().slice(0, HIGHLIGHT_COUNT);
+  const inStock = getProductsInStock().slice(0, HIGHLIGHT_COUNT);
+  const outOfStock = getProductsOutOfStock().slice(0, HIGHLIGHT_COUNT);
+  const categories = CATEGORY_SECTIONS.map((category) => ({
+    ...category,
+    products: getProductsByCategory(category.value).slice(0, HIGHLIGHT_COUNT),
+  }));
 
   return (
     <div id="page">
       <h2 className={styles.title}>Lista produktów</h2>
-      <div className={styles.stats}>
-        <h3>Statystyki:</h3>
-        <ul>
-          <li>Wszystkich produktów: {allAlphabetically.length}</li>
-          <li>Produktów na stanie: {inStock.length}</li>
-          <li>Produktów wyprzedanych: {outOfStock.length}</li>
-          <li>Procesorów: {processors.length}</li>
-          <li>Kart graficznych: {gpus.length}</li>
-          <li>Pamięci RAM: {ram.length}</li>
-          <li>Dysków: {disks.length}</li>
-        </ul>
-      </div>
-      {productById && (
-        <div className={styles.productExample}>
-          <h3>Przykładowy produkt (ID: 1):</h3>
-          <p>Nazwa: {productById.name}</p>
-          <p>Typ: {productById.type}</p>
-          <p>Cena: {productById.price} zł</p>
-          <p>Ilość: {productById.amount}</p>
+
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h3>Wszystkie produkty (alfabetycznie)</h3>
+          <span>{allAlphabetically.length} pozycji</span>
         </div>
-      )}
+        <ProductGrid products={allAlphabetically} emptyLabel="Brak produktów" />
+      </section>
+
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h3>Najnowsze produkty</h3>
+          <span>Ostatnio dodane</span>
+        </div>
+        <ProductGrid products={newest} emptyLabel="Brak nowych produktów" />
+      </section>
+
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h3>Produkty dostępne od ręki</h3>
+          <span>Wyświetlamy {inStock.length} pozycji</span>
+        </div>
+        <ProductGrid products={inStock} emptyLabel="Brak produktów na stanie" />
+      </section>
+
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h3>Produkty chwilowo niedostępne</h3>
+          <span>Wyświetlamy {outOfStock.length} pozycji</span>
+        </div>
+        <ProductGrid
+          products={outOfStock}
+          emptyLabel="Wszystkie produkty są dostępne"
+        />
+      </section>
+
+      {categories.map(({ label, products }) => (
+        <section className={styles.section} key={label}>
+          <div className={styles.sectionHeader}>
+            <h3>{label}</h3>
+            <span>{products.length} produktów</span>
+          </div>
+          <ProductGrid
+            products={products}
+            emptyLabel={`Brak produktów w kategorii ${label.toLowerCase()}`}
+          />
+        </section>
+      ))}
     </div>
+  );
+}
+
+function ProductGrid({
+  products,
+  emptyLabel,
+}: {
+  products: Product[];
+  emptyLabel: string;
+}) {
+  if (!products.length) {
+    return <p className={styles.placeholder}>{emptyLabel}</p>;
+  }
+
+  return (
+    <ul className={styles.grid}>
+      {products.map((product) => (
+        <li className={styles.card} key={product.id}>
+          <div className={styles.cardHeader}>
+            <span className={styles.badge}>{product.type}</span>
+            <span className={styles.code}>{product.code}</span>
+          </div>
+          <h4>{product.name}</h4>
+          <p className={styles.description}>{product.description}</p>
+          <div className={styles.meta}>
+            <span>Cena: {product.price.toFixed(2)} zł</span>
+            <span>Stan: {product.amount}</span>
+          </div>
+          <span className={styles.date}>Dodano: {product.date}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
