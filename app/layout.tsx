@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import MainHeader from "@/components/main-header";
+import Footer from "@/components/footer";
 import "./global.css";
 
 export const metadata: Metadata = {
@@ -15,31 +16,9 @@ export default function RootLayout({
   return (
     <html lang="pl">
       <body>
-        <header>
-          <nav>
-            <div id="logo">
-              <Link href="/">Computer Shop 2025mk</Link>
-            </div>
-            <ul>
-              <li>
-                <Link href="/product-list">Lista produktów</Link>
-              </li>
-              <li>
-                <Link href="/basket">Koszyk</Link>
-              </li>
-              <li>
-                <Link href="/order-history">Historia zakupów</Link>
-              </li>
-              <li>
-                <Link href="/about">O sklepie</Link>
-              </li>
-            </ul>
-          </nav>
-        </header>
+        <MainHeader />
         {children}
-        <footer>
-          <p>&copy; 2025 Computer Shop 2025mk.</p>
-        </footer>
+        <Footer />
       </body>
     </html>
   );
