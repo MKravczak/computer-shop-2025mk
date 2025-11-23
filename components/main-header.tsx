@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import NavLink from './nav-link';
 import './main-header.css';
 
 export default function MainHeader() {
@@ -19,16 +20,16 @@ export default function MainHeader() {
         </div>
         <ul>
           <li>
-            <Link href="/product-list">Lista produktów</Link>
+            <NavLink href="/product-list">Lista produktów</NavLink>
           </li>
           <li>
-            <Link href="/basket">Koszyk</Link>
+            <NavLink href="/basket">Koszyk</NavLink>
           </li>
           <li>
-            <Link href="/order-history">Historia zakupów</Link>
+            <NavLink href="/order-history">Historia zakupów</NavLink>
           </li>
           <li>
-            <Link href="/about">O sklepie</Link>
+            <NavLink href="/about">O sklepie</NavLink>
           </li>
         </ul>
       </nav>
