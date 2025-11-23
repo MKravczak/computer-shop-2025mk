@@ -10,14 +10,17 @@ export default async function ProductDetailPage({
   params: Promise<{ 'product-id': string }>;
 }) {
   const { 'product-id': productId } = await params;
+  
+  // Walidacja: sprawdzenie czy product-id jest liczbą
   const productIdNumber = parseInt(productId, 10);
-
-  if (isNaN(productIdNumber)) {
+  if (isNaN(productIdNumber) || productIdNumber <= 0) {
     notFound();
   }
 
+  // Pobranie produktu po ID
   const product = getProductById(productIdNumber);
 
+  // Sprawdzenie czy produkt istnieje
   if (!product) {
     notFound();
   }
