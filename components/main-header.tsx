@@ -18,17 +18,17 @@ export default function MainHeader() {
             />
           </Link>
         </div>
-        <ul className="flex gap-4 list-none m-0 p-0 font-bold md:flex-wrap md:justify-center">
-          <li>
+        <ul className="flex gap-12 list-none m-0 p-0 font-bold md:flex-wrap md:justify-center md:gap-6">
+          <li className="md:px-6">
             <NavLink href="/product-list">Lista produktów</NavLink>
           </li>
-          <li>
+          <li className="md:px-6">
             <NavLink href="/basket">Koszyk</NavLink>
           </li>
-          <li>
+          <li className="md:px-6">
             <NavLink href="/order-history">Historia zakupów</NavLink>
           </li>
-          <li>
+          <li className="md:px-6">
             <NavLink href="/about">O sklepie</NavLink>
           </li>
         </ul>

@@ -24,7 +24,7 @@ export default async function DiscountsSlot({
 
   return (
     <div className="mt-8">
-      <h2 className="mb-6 text-2xl font-bold text-text">🔥 Promocje</h2>
+      <h2 className="mb-6 text-2xl font-bold text-text">Promocje</h2>
       <div className="flex gap-4 overflow-x-auto pb-4 md:flex-col">
         {discountedProducts.map((product) => {
           const originalPrice = product.price;
@@ -40,11 +40,11 @@ export default async function DiscountsSlot({
               <div className="flex flex-col gap-3">
                 <div className="flex justify-center">
                   <Image
-                    src={product.image || '/images/products/placeholder.svg'}
+                    src="/images/products/placeholder.svg"
                     alt={product.name}
-                    width={200}
-                    height={200}
-                    className="w-48 h-48 object-contain rounded-lg bg-primary/50 p-2"
+                    width={120}
+                    height={120}
+                    className="w-24 h-24 object-contain rounded-lg bg-primary/50 p-2"
                   />
                 </div>
                 <h3 className="text-lg font-semibold text-text line-clamp-2">
@@ -68,9 +68,9 @@ export default async function DiscountsSlot({
                     {product.type}
                   </span>
                   {product.amount > 0 ? (
-                    <span className="text-green-400 text-xs">✓ Dostępny</span>
+                    <span className="text-green-400 text-xs">Dostępny</span>
                   ) : (
-                    <span className="text-red-400 text-xs">✗ Niedostępny</span>
+                    <span className="text-red-400 text-xs">Niedostępny</span>
                   )}
                 </div>
               </div>

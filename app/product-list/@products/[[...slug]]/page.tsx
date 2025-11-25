@@ -37,7 +37,7 @@ export default async function ProductsSlot({
     return (
       <div>
         <h2 className="mb-8">Wszystkie produkty</h2>
-        <ProductList products={products} />
+        <ProductList products={products} showFilters />
       </div>
     );
   }
@@ -89,7 +89,7 @@ export default async function ProductsSlot({
     }
 
     return (
-      <div>
+      <div data-product-detail="true">
         <Link 
           href={`/product-list/${categorySlug}`} 
           className="inline-block mb-8 text-text no-underline text-base transition-colors duration-300 hover:text-accent"
@@ -100,11 +100,11 @@ export default async function ProductsSlot({
         <div className="grid grid-cols-2 gap-12 mt-8 md:grid-cols-1 md:gap-8">
           <div className="flex justify-center items-start">
             <Image
-              src={product.image || '/images/products/placeholder.svg'}
+              src="/images/products/placeholder.svg"
               alt={product.name}
-              width={400}
-              height={400}
-              className="w-full h-auto rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.2)] object-contain bg-primary p-4"
+              width={200}
+              height={200}
+              className="w-48 h-48 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.2)] object-contain bg-primary p-4"
               priority
             />
           </div>
@@ -152,11 +152,11 @@ export default async function ProductsSlot({
             <div className="p-4 rounded-lg text-center font-bold text-lg">
               {product.amount > 0 ? (
                 <span className="text-green-400 bg-green-400/10 py-3 px-6 rounded-lg inline-block">
-                  ✓ Dostępny
+                     Dostępny 
                 </span>
               ) : (
                 <span className="text-red-400 bg-red-400/10 py-3 px-6 rounded-lg inline-block">
-                  ✗ Niedostępny
+                   Niedostępny &nbsp;
                 </span>
               )}
             </div>
@@ -173,17 +173,50 @@ export default async function ProductsSlot({
 // Komponent do wyświetlania listy produktów
 function ProductList({ 
   products, 
-  categorySlug 
+  categorySlug,
+  showFilters = false,
 }: { 
   products: Product[]; 
   categorySlug?: string;
+  showFilters?: boolean;
 }) {
   if (products.length === 0) {
     return <p className="opacity-80 text-base">Brak produktów do wyświetlenia.</p>;
   }
 
+  const formatLabel = (text: string) =>
+    text.replace(/\b\w/g, (char) => char.toUpperCase());
+
+  const categoryFilters = Object.entries(TYPE_TO_SLUG).map(([type, slug]) => ({
+    label: formatLabel(type),
+    slug,
+  }));
+
+  const gridBaseClass = "list-none p-0 m-0 grid grid-cols-4 gap-8 md:grid-cols-2 sm:grid-cols-1 md:gap-4 justify-items-center";
+
   return (
-    <ul className="list-none p-0 m-0 flex flex-col gap-4">
+    <>
+      {showFilters && (
+        <div className="flex flex-wrap gap-8 mb-12 justify-center">
+          <Link
+            href="/product-list"
+            className="px-6 py-3 rounded-full bg-text-dark/30 text-white uppercase tracking-wide text-base font-semibold no-underline shadow-[0_4px_12px_rgba(0,0,0,0.25)] hover:bg-text hover:text-text-dark transition-colors duration-200"
+          >
+            Wszystkie
+          </Link>
+          {categoryFilters.map((filter) => (
+            <Link
+              key={filter.slug}
+              href={`/product-list/${filter.slug}`}
+              className="px-6 py-3 rounded-full bg-text-dark/30 text-white uppercase tracking-wide text-base font-semibold no-underline shadow-[0_4px_12px_rgba(0,0,0,0.25)] hover:bg-text hover:text-text-dark transition-colors duration-200"
+            >
+              {filter.label}
+            </Link>
+          ))}
+        </div>
+      )}
+
+      <ul className={`${gridBaseClass} ${showFilters ? 'mt-6' : ''}`}>
       {products.map((product) => {
         const href = categorySlug 
           ? `/product-list/${categorySlug}/${product.id}`
@@ -192,33 +225,50 @@ function ProductList({
         return (
           <li 
             key={product.id} 
-            className="bg-primary rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.2)]"
+            className="bg-primary rounded-lg transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_16px_rgba(0,0,0,0.3)] w-full max-w-xs h-full flex flex-col"
           >
             <Link 
               href={href}
-              className="block no-underline text-inherit p-6"
+              className="block no-underline text-inherit h-full flex flex-col"
             >
-              <div className="flex flex-col gap-3">
-                <h3 className="text-xl font-semibold m-0 text-text">
-                  {product.name}
-                </h3>
-                <div className="flex gap-6 flex-wrap text-base md:flex-col md:gap-2">
-                  <span className="py-1 px-3 rounded-full bg-text-dark/20 capitalize">
-                    {product.type}
-                  </span>
-                  <span className="text-text font-medium">
-                    Ilość: {product.amount}
-                  </span>
-                  <span className="text-accent font-bold">
-                    Cena: {product.price.toFixed(2)} zł
-                  </span>
+              <div className="flex flex-col h-full">
+                <div className="flex justify-center items-center p-4 bg-primary/50 rounded-t-lg min-h-[140px]">
+                  <Image
+                    src="/images/products/placeholder.svg"
+                    alt={product.name}
+                    width={120}
+                    height={120}
+                    className="w-24 h-24 object-contain"
+                  />
+                </div>
+                <div className="flex flex-col gap-2 p-4 flex-grow min-h-[180px]">
+                  <h3 className="text-lg font-semibold m-0 text-text line-clamp-2 min-h-[3rem]">
+                    {product.name}
+                  </h3>
+                  <div className="flex flex-col gap-3 text-sm mt-auto">
+                    <span className="py-1 px-2 rounded-full bg-text-dark/20 capitalize text-xs w-fit">
+                      {product.type}
+                    </span>
+                    {product.amount > 0 ? (
+                      <span className="text-green-400 text-xs"> Dostępny &nbsp;</span>
+                    ) : (
+                      <span className="text-red-400 text-xs"> Niedostępny &nbsp;</span>
+                    )}
+                    <span className="text-text font-medium">
+                      Ilość: {product.amount}
+                    </span>
+                    <span className="text-accent font-bold">
+                      {product.price.toFixed(2)} zł
+                    </span>
+                  </div>
                 </div>
               </div>
             </Link>
           </li>
         );
       })}
-    </ul>
+      </ul>
+    </>
   );
 }
 

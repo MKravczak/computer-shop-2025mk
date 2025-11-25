@@ -6,35 +6,42 @@
 
 @layer base {
   * {
-    @apply box-border;
+    box-sizing: border-box;
   }
 
   html {
-    @apply font-serif;
+    font-family: 'Merriweather', serif;
   }
 
   body {
-    @apply m-0 bg-secondary text-text;
+    margin: 0;
+    background-color: #8989e0;
+    color: #e5e5e1;
   }
 
   ul {
-    @apply list-none m-0 p-0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
   h1, h2, h3 {
-    @apply mt-0 mb-4;
+    margin-top: 0;
+    margin-bottom: 1rem;
   }
 
   h1 {
-    @apply text-4xl;
+    font-size: 2.5rem;
   }
 
   h2 {
-    @apply text-3xl mb-6;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
   }
 
   h3 {
-    @apply text-2xl mb-4;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
   }
 }
 
