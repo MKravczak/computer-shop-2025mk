@@ -13,3 +13,134 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// ============================================================================
+// ENUM - Status zamówienia
+// ============================================================================
+
+enum OrderStatus {
+  PENDING     // Oczekujące na realizację
+  PROCESSING  // W trakcie realizacji
+  SHIPPED     // Wysłane
+  DELIVERED   // Dostarczone
+  CANCELLED   // Anulowane
+}
+
+// ============================================================================
+// MODEL: User (Użytkownik)
+// ============================================================================
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacje
+  carts     Cart[]   // Jeden użytkownik może mieć wiele koszyków
+  orders    Order[]  // Jeden użytkownik może mieć wiele zamówień
+}
+
+// ============================================================================
+// MODEL: Product (Produkt)
+// ============================================================================
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float    @default(0.0)
+  inStock     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relacje
+  cartItems   CartItem[]   // Produkt może być w wielu koszykach (przez CartItem)
+  orderItems  OrderItem[]  // Produkt może być w wielu zamówieniach (przez OrderItem)
+}
+
+// ============================================================================
+// MODEL: Cart (Koszyk)
+// ============================================================================
+
+model Cart {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacje
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cartItems CartItem[] // Koszyk ma wiele pozycji (CartItem)
+
+  @@index([userId]) // Indeks dla szybkiego wyszukiwania koszyków użytkownika
+}
+
+// ============================================================================
+// MODEL: CartItem (Pozycja koszyka)
+// Tabela pośrednia dla relacji wiele-do-wielu: Product <-> Cart
+// ============================================================================
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  cartId    Int
+  productId Int
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacje
+  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)    // Usunięcie koszyka usuwa wszystkie CartItem
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade) // Usunięcie produktu usuwa CartItem
+
+  @@index([cartId])    // Indeks dla szybkiego pobierania pozycji koszyka
+  @@index([productId]) // Indeks dla szybkiego wyszukiwania produktu w koszykach
+  @@unique([cartId, productId]) // Jeden produkt może być tylko raz w danym koszyku
+}
+
+// ============================================================================
+// MODEL: Order (Zamówienie)
+// ============================================================================
+
+model Order {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  orderDate   DateTime    @default(now())
+  status      OrderStatus @default(PENDING)
+  totalAmount Float       @default(0.0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relacje
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[] // Zamówienie ma wiele pozycji (OrderItem)
+
+  @@index([userId])    // Indeks dla szybkiego pobierania zamówień użytkownika
+  @@index([orderDate]) // Indeks dla sortowania/filtrowania po dacie zamówienia
+}
+
+// ============================================================================
+// MODEL: OrderItem (Pozycja zamówienia)
+// WAŻNE: Kopiujemy nazwę produktu i cenę, aby zachować historię zamówień
+// nawet jeśli produkt zostanie usunięty lub jego cena się zmieni
+// ============================================================================
+
+model OrderItem {
+  id            Int      @id @default(autoincrement())
+  orderId       Int
+  productId     Int
+  quantity      Int      @default(1)
+  productName   String   // Kopia nazwy produktu w momencie zamówienia
+  productPrice  Float    // Kopia ceny produktu w momencie zamówienia
+  subtotal      Float    // quantity * productPrice
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relacje
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)     // Usunięcie zamówienia usuwa wszystkie OrderItem
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)  // NIE usuwaj OrderItem gdy produkt zostanie usunięty (zachowanie historii)
+
+  @@index([orderId])   // Indeks dla szybkiego pobierania pozycji zamówienia
+  @@index([productId]) // Indeks dla analiz sprzedaży produktu
+}
