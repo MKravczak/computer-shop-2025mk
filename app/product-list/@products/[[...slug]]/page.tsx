@@ -37,7 +37,11 @@ export default async function ProductsSlot({
     return (
       <div>
         <h2 className="mb-8">Wszystkie produkty</h2>
-        <ProductList products={products} showFilters />
+        <ProductList 
+          products={products} 
+          showFilters 
+          activeCategorySlug={null} 
+        />
       </div>
     );
   }
@@ -63,7 +67,11 @@ export default async function ProductsSlot({
           ← Wróć do listy produktów
         </Link>
         <h2 className="mb-8 capitalize">Produkty: {categoryName}</h2>
-        <ProductList products={products} categorySlug={categorySlug} />
+        <ProductList 
+          products={products} 
+          categorySlug={categorySlug} 
+          activeCategorySlug={categorySlug} 
+        />
       </div>
     );
   }
@@ -175,10 +183,12 @@ function ProductList({
   products, 
   categorySlug,
   showFilters = false,
+  activeCategorySlug,
 }: { 
   products: Product[]; 
   categorySlug?: string;
   showFilters?: boolean;
+  activeCategorySlug?: string | null;
 }) {
   if (products.length === 0) {
     return <p className="opacity-80 text-base">Brak produktów do wyświetlenia.</p>;
@@ -197,10 +207,10 @@ function ProductList({
   return (
     <>
       {showFilters && (
-        <div className="flex flex-wrap gap-8 mb-12 justify-center">
+        <div className="category-filters">
           <Link
             href="/product-list"
-            className="px-6 py-3 rounded-full bg-text-dark/30 text-white uppercase tracking-wide text-base font-semibold no-underline shadow-[0_4px_12px_rgba(0,0,0,0.25)] hover:bg-text hover:text-text-dark transition-colors duration-200"
+            className={`category-filter-link ${activeCategorySlug === null ? 'active' : ''}`}
           >
             Wszystkie
           </Link>
@@ -208,7 +218,7 @@ function ProductList({
             <Link
               key={filter.slug}
               href={`/product-list/${filter.slug}`}
-              className="px-6 py-3 rounded-full bg-text-dark/30 text-white uppercase tracking-wide text-base font-semibold no-underline shadow-[0_4px_12px_rgba(0,0,0,0.25)] hover:bg-text hover:text-text-dark transition-colors duration-200"
+              className={`category-filter-link ${activeCategorySlug === filter.slug ? 'active' : ''}`}
             >
               {filter.label}
             </Link>
