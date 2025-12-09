@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
-// Wymuszamy runtime Node.js (middleware/proxy nie może działać w edge z Prisma)
-export const runtime = "nodejs";
-
 // Publiczne ścieżki, które nie wymagają zalogowania
 const PUBLIC_PATHS = ["/", "/api/auth", "/product-list"];
 
@@ -33,7 +30,7 @@ export default auth((req) => {
   return NextResponse.next();
 });
 
-// Ograniczamy middleware do tras wymagających autoryzacji (np. koszyk, historia zamówień)
+// Ograniczamy proxy do tras wymagających autoryzacji (np. koszyk, historia zamówień)
 export const config = {
   matcher: ["/basket/:path*", "/order-history/:path*"],
 };
