@@ -8,7 +8,7 @@ import prisma from "@/lib/prisma";
  * @returns Koszyk z pozycjami i produktami lub null jeśli nie istnieje
  */
 export async function getCartWithItems(userId: string) {
-  const cart = await prisma.cart.findUnique({
+  const cart = await prisma.cart.findFirst({
     where: {
       userId: parseInt(userId, 10), // Konwersja string na number
     },
@@ -43,8 +43,9 @@ export async function getCartTotal(userId: string) {
 
   // Obliczamy sumę wartości wszystkich pozycji w koszyku
   const total = cart.cartItems.reduce((sum, item) => {
-    // Cena produktu * ilość pozycji
-    const itemTotal = Number(item.product.price) * item.quantity;
+    // Cena produktu * ilość pozycji (defensywnie: brak produktu -> 0)
+    const price = Number(item.product?.price ?? 0);
+    const itemTotal = price * item.quantity;
     return sum + itemTotal;
   }, 0); // Wartość początkowa: 0
 

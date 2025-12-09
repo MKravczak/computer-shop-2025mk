@@ -1,4 +1,6 @@
 import { getCartTotal, getCartWithItems } from "@/lib/actions/cart";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 const formatPrice = (value: number) =>
   new Intl.NumberFormat("pl-PL", {
@@ -8,20 +10,17 @@ const formatPrice = (value: number) =>
   }).format(value);
 
 export default async function Basket() {
-  const userId = process.env.USER_ID;
+  // Pobieramy sesję użytkownika z Auth.js
+  const session = await auth();
 
-  if (!userId) {
-    return (
-      <div className="w-[90%] max-w-4xl mx-auto my-8 md:w-[95%] md:my-4">
-        <h2 className="mb-8">Koszyk</h2>
-        <div className="bg-primary p-8 rounded-lg">
-          <p className="text-center">
-            Brak USER_ID w zmiennych środowiskowych.
-          </p>
-        </div>
-      </div>
-    );
+  // Jeśli użytkownik nie jest zalogowany, middleware powinien przekierować,
+  // ale na wypadek gdyby middleware nie zadziałał, sprawdzamy tutaj
+  if (!session?.user?.id) {
+    redirect("/api/auth/signin?callbackUrl=/basket");
   }
+
+  // Używamy ID użytkownika z sesji (konwersja na string, bo getCartWithItems przyjmuje string)
+  const userId = String(session.user.id);
 
   const cart = await getCartWithItems(userId);
   const total = await getCartTotal(userId);
