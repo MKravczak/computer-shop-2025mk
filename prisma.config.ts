@@ -11,7 +11,8 @@ export default defineConfig({
   },
   engine: "classic",
   datasource: {
-    url: env("DATABASE_URL"),
+    // DATABASE_URL jest opcjonalny dla prisma generate (nie jest potrzebny do generowania klienta)
+    url: env("DATABASE_URL", { optional: true }) || "postgresql://placeholder",
   },
   seed: {
     command: "tsx prisma/seed.ts",
