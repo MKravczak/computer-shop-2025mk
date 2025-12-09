@@ -15,7 +15,5 @@ export default defineConfig({
     // Używamy process.env bezpośrednio, aby uniknąć błędu podczas postinstall
     url: process.env.DATABASE_URL || "postgresql://placeholder",
   },
-  seed: {
-    command: "tsx prisma/seed.ts",
-  },
+  // seed jest zdefiniowane w package.json, nie tutaj
 });
