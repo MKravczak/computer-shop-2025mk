@@ -14,39 +14,39 @@ export interface Product {
 
 
 export function getAllProductsAlphabetically(): Product[] {
-  return [...productsData].sort((a, b) => a.name.localeCompare(b.name));
+  return ([...productsData] as Product[]).sort((a, b) => a.name.localeCompare(b.name));
 }
 
 
 export function getAllProductsByDate(): Product[] {
-  return [...productsData].sort((a, b) => 
+  return ([...productsData] as Product[]).sort((a, b) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 }
 
 
 export function getProductsInStock(): Product[] {
-  return productsData.filter(product => product.amount > 0);
+  return (productsData as Product[]).filter(product => product.amount > 0);
 }
 
 
 export function getProductsOutOfStock(): Product[] {
-  return productsData.filter(product => product.amount === 0);
+  return (productsData as Product[]).filter(product => product.amount === 0);
 }
 
 // Wszystkie produkty danej kategorii
 export function getProductsByCategory(type: Product['type']): Product[] {
-  return productsData.filter(product => product.type === type);
+  return (productsData as Product[]).filter(product => product.type === type);
 }
 
 // Wybrany produkt (po id)
 export function getProductById(id: number): Product | undefined {
-  return productsData.find(product => product.id === id);
+  return (productsData as Product[]).find(product => product.id === id);
 }
 
 // Zmiana ilości produktu o podanym id
 export function updateProductAmount(id: number, newAmount: number): Product | null {
-  const product = productsData.find(p => p.id === id);
+  const product = (productsData as Product[]).find(p => p.id === id);
   if (!product) {
     return null;
   }
@@ -56,6 +56,6 @@ export function updateProductAmount(id: number, newAmount: number): Product | nu
 
 // Eksport wszystkich produktów (dla wygody)
 export function getAllProducts(): Product[] {
-  return productsData;
+  return productsData as Product[];
 }
 
